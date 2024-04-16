@@ -1,0 +1,440 @@
+/* @import url('security.jpeg'); */
+
+/* this just basically allows me to put this color in a variable and 
+it is the most specific selector, so it has to happen */
+:root {
+    /* the a part is the transparency */
+  --background: rgba(22, 43, 50, .85);
+  --fw-1: 300;
+  --fw-2: 700;
+  --fw-3: 900;
+  
+  --fs-1: 1.125rem;
+  --fs-2: 1.25rem;
+  --fs-3: 2rem;
+  --fs-small: .75rem;
+  
+  --clr-1: #fff;
+  --clr-2: #255996;
+  --clr-3: #1b3049;
+  --clr-4: #171f29;
+  --clr-5: #1fd030;
+  
+  --clr-dark: rgba(0,0,0,.25);
+  --clr-body: rgba(255,255,255,.8);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+h2 {
+    color: rgb(55, 169, 198);
+}
+
+body {
+	margin: 0;
+	/* background: rgb(19, 21, 28); */
+    background: white;
+	font-family: 'Work Sans', sans-serif;
+	font-weight: 400;
+    /* color: white; */
+}
+
+.content {
+    height: 100vh;
+    padding-top: 6rem;
+  }
+
+.container {
+    /* means left and right margin only */
+    margin-inline: auto;
+    width: min(90%, 70.5rem);
+}
+
+
+img {
+    max-width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+
+header {
+    background: var(--background);
+    text-align: center;
+    /* align-items: center; */
+    /* this is so that the nav bar stays up there */
+    position: fixed;
+    /* this makes sure its always on top of everything */
+    z-index:999;
+    width: 100%;
+    padding:1rem;
+}
+
+/* feel free to change the Logo */
+.logo {
+    /* padding:2rem; */
+    width:3rem;
+    height:3rem;
+    background-image: url('./assets/verified.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    /* margin-left: 3rem; */
+}
+
+/* we do this because we dont want the checkbox */
+.nav-toggle {
+    display: none;
+}
+
+.nav-toggle-label {
+    /* i really dont quite get positions */
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 1em;
+    height: 100%;
+    display: flex;
+    /* border: solid 1px red; */
+    align-items: center;
+}
+
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block;
+  background: white;
+  height: 2px;
+  width: 2em;
+  border-radius: 2px;
+  position: relative;
+}
+
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  content: '';
+  position: absolute;
+}
+
+.nav-toggle-label span::before {
+  bottom: 7px;
+}
+
+.nav-toggle-label span::after {
+  top: 7px;
+}
+
+nav {
+    position: absolute;
+    text-align: left;
+    top: 100%;
+    left: 0;
+    background: var(--background);
+    width: 100%;
+    /* display: none; */
+    /* width height on the scale */
+    transform: scale(1, 0);
+    transform-origin: top;
+    transition: transform 400ms ease-in-out;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+nav li {
+    margin-bottom: 1em;
+    margin-left: 1em;
+}
+
+nav a {
+    color: rgb(55, 169, 198);
+    text-decoration: none;
+    font-size: 1.3rem;
+    opacity: 0;
+    transition: opacity 150ms ease-in-out;
+}
+
+nav a:hover{
+    color: white;
+}
+
+.nav-toggle:checked ~ nav {
+    /* display: block; */
+    transform: scale(1, 1);
+}
+
+.nav-toggle:checked ~ nav a {
+    opacity: 1;
+    transition: opacity 250ms ease-in-out 250ms;
+}
+
+
+#sign-button {
+    /* color:white; */
+}
+
+#login-button {
+
+}
+
+@media screen and (min-width: 800px) {
+    .nav-toggle-label {
+        display: none;
+    }
+
+    header {
+        display: grid;
+        grid-template-columns: 1fr auto minmax(600px, 3fr) 1fr 1fr;
+    }
+
+    .logo {
+        grid-column: 2 / 3;
+    }
+
+    nav {
+        all: unset;
+        grid-column: 3 / 4;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    nav li {
+        margin-left: 3em;
+        margin-bottom: 0;
+    }
+
+    nav a {
+        opacity: 1;
+        position: relative;
+    }
+
+    nav a::before {
+        content: '';
+        display: block;
+        height: 5px;
+        background: white;
+        position: absolute;
+        bottom: -0.75em;
+        left: 0;
+        right: 0;
+        transform: scale(0, 1);
+        transition: transform ease-in-out 250ms;
+    }
+
+    nav a:hover::before {
+        transform: scale(1, 1);
+    }
+
+    .signIn {
+        grid-column: 4 / 5;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
+
+div button {
+    margin-left: 1rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+    background: rgba(22, 43, 50, .85);
+    border: 2px solid rgb(55, 169, 198);
+    color:rgb(55, 169, 198);
+    border-radius: 8px;
+}
+
+.form-box {
+    display:flex;
+    justify-content: center;
+
+    margin-left: 300px;
+
+    align-items: center;
+    position: relative;
+    width: 512px;
+    height: 490px;
+    border: 1px solid black;
+    /* overflow: hidden; */
+    z-index:2;
+    
+}
+
+.management-box {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: 1px solid black;
+    /* overflow: hidden; */
+    /* z-index:2; */
+    
+}
+
+
+.login-container {
+    width: 400px;
+    position: absolute;
+    margin-left: 4px;
+    padding-bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+    /* transition: 2s ease-in-out; */
+}
+
+.register-container {
+    width: 400px;
+    position: absolute;
+    /* right: -520px; */
+
+
+
+    display: flex;
+    flex-direction: column;
+    /* transition: 2s ease-in-out; */
+}
+
+.top span {
+    /* color:#fff; */
+    font-size: small;
+    padding: 10px 0;
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.top span a {
+    font-weight: 500;
+    /* color: #fff; */
+    margin-left: 5px;
+}
+
+button1 {
+    margin-left: 1rem;
+    text-decoration: underline;
+}
+
+.signHead {
+    /* color:white; */
+    font-size: 30px;
+    text-align: center;
+    padding: 10px 0 30px 0;
+}
+
+.two-forms {
+    display: flex;
+    gap: 10px;
+}
+
+.input-box {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.input-field {
+    font-size: 15px;
+    background: rgba(117,117,117,.25);
+    /* color: white; */
+    height: 50px;
+    width: 100%;
+    padding: 0 10px 0 45px;
+    border: none;
+    border-radius: 30px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+/* .input-field:hover, .input-field:focus{
+    background: (117,117,117,.25);
+} */
+::-webkit-input-placeholder{
+    color: black;
+}
+
+.submit {
+    font-size: 15px;
+    font-weight: 500;
+    color: black;
+    height: 45px;
+    width: 100%;
+    border: none;
+    border-radius: 30px;
+    outline: none;
+    background: (117,117,117,.25);
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+.submit:hover {
+    background: (117,117,117,.25);
+    box-shadow: 1px 5px 5px 1px rgba(0, 0, 0, 0.2)
+}
+
+.two-col {
+    display: flex;
+    justify-content: space-between;
+    /* color: white; */
+    font-size: small;
+    margin-top: 10px;
+}
+
+.two-col .one{
+    display: flex;
+    gap: 5px;
+}
+
+.two label a {
+    text-decoration: none;
+    /* color: white; */
+}
+
+.two label a:hover {
+    text-decoration: underline;
+}
+
+
+@media only screen and (max-width: 540px) {
+    .wrapper{
+        min-height: 100vh;
+    }
+
+    .form-box {
+        width: 100%;
+        height: 500px;
+        margin-left: 0px;
+    }
+
+    .login-container {
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .register-container {
+        width: 100%;
+        padding: 0 20px;
+    }
+
+    .register-container .two-forms{
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .signHead {
+        padding: 0;
+    }
+}
