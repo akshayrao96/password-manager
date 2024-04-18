@@ -15,8 +15,10 @@ function LoggedIn() {
     const [errorMessage, setErrorMessage] = useState('');
     const [editing, setEditing] = useState({
         isEditing: false,
-        originalPasswordURL: '',
-        originalPasswordPassword: ''
+        // is this an object? What type is it?
+        editingPasswordId: '',
+        // originalPasswordURL: '',
+        // originalPasswordPassword: ''
     });
 
     // This function talks to the backend to retrieve this
@@ -26,8 +28,8 @@ function LoggedIn() {
     }
 
     // Talks to the backend to delete this password
-    async function deletePassword(password) {
-        await axios.delete('/api/passwordManager/' + password);
+    async function deletePassword(passwordId) {
+        await axios.delete('/api/passwordManager/' + passwordId);
         await getAllPassword();
     }
 
@@ -36,7 +38,7 @@ function LoggedIn() {
         setErrorMessage('')
         try {
             if (editing.isEditing) {
-                await axios.put('/api/passwordManager/' + editing.originalPasswordURL, {
+                await axios.put('/api/passwordManager/' + editing.editingPasswordId, {
                     URL: passwordURL,
                     Password: passwordPassword,
                 });
@@ -51,8 +53,7 @@ function LoggedIn() {
             setPasswordPassword('');
             setEditing({
                 isEditing: false,
-                originalPasswordURL: '',
-                originalPasswordPassword: ''
+                editingPasswordId: '',
             });
             await getAllPassword();
         } catch (error) {
@@ -68,13 +69,12 @@ function LoggedIn() {
         setPasswordPassword(event.target.value);
     }
 
-    function setEditingPassword(passwordURL, passwordPassword) {
+    function setEditingPassword(passwordURL, passwordPassword, passwordId) {
         setPasswordURL(passwordURL);
         setPasswordPassword(passwordPassword);
         setEditing({
           isEditing: true, 
-          originalPasswordURL: passwordURL,
-          originalPasswordPassword: passwordPassword,
+          editingPasswordId: passwordId
     });
     }
 
@@ -83,8 +83,7 @@ function LoggedIn() {
         setPasswordPassword('');
         setEditing({
           isEditing: false, 
-          originalPasswordURL: '',
-          originalPasswordPassword: '',
+          editingPasswordId: '',
     });
     }
 
@@ -101,10 +100,10 @@ function LoggedIn() {
     for(let i = 0; i < passwordList.length; i++) {
         passwordListElement.push(<li>URL: {passwordList[i].URL} 
         - Password: {passwordList[i].Password}
-        - <button onClick={() => deletePassword(passwordList[i].URL)}>Delete</button>
+        - <button onClick={() => deletePassword(passwordList[i]._id)}>Delete</button>
         {/* first we create a button -> Somehow we want the edit button to be able to change the URL and the password
         We need to somehow allow the change of state */}
-        - <button onClick={() => setEditingPassword(passwordList[i].URL, passwordList[i].Password)}>Edit</button>
+        - <button onClick={() => setEditingPassword(passwordList[i].URL, passwordList[i].Password, passwordList[i]._id)}>Edit</button>
         </li>)
 
     } 

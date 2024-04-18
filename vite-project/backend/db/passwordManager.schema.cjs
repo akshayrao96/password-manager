@@ -4,13 +4,14 @@
 
 const Schema = require('mongoose').Schema;
 
-exports.PasswordSchema = new Schema({
+// Must this be in order? When you add things?
+module.exports = new Schema({
     URL: {
         type: String,
         required: true,
     },
     Password: String,
-    // owner:String,
+    owner:String,
     dateCreated: {
         type: Date,
         default: Date.now,

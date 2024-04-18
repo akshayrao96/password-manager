@@ -12,18 +12,38 @@ let personalPasswords = [
 ];
 
 // We need to get the passwords
-router.get('/', function(req, res) {
-    return res.send(personalPasswords);
+router.get('/', async function(req, res) {
+    const owner = req.cookies.passwordOwner;
+
+
+
+    
+    try {
+        const allPasswordResponse = await PasswordModel.getPasswordByOwner(owner);
+        return res.send(allPasswordResponse);
+    } catch (error) {
+        res.status(400);
+        return res.send("Error inserting password information into DB");
+    }
+
 })
 
-router.delete('/:passwordId', function(req, res) {
-    const passwordURL = req.params.passwordId;
 
-    personalPasswords = personalPasswords.filter((password) => {
-        return password.URL !== passwordURL;
-    })
+router.get('/:passwordId', async function(req, res) {
+    const passwordId = req.params.passwordId;
+    // const trainer = req.params.trainer;
 
-    return res.send("Success :)");
+
+    try {
+        const getPasswordResponse = await PasswordModel.getPasswordById(passwordId);
+        return res.send(getPasswordResponse);
+    } catch (error) {
+        res.status(400);
+        return res.send(error);
+    }
+
+    // res.status(404);
+    // return res.send("Pokemon with name " + pokemonName + " not found :(");
 })
 
 
@@ -40,19 +60,87 @@ router.post('/', async function(req, res) {
     const newPassword = {
         URL: requestBody.URL,
         Password: requestBody.Password,
+        owner: "nathan",
     }
 
     // you need to know that whenever you add data into a database, you get a Promise
     personalPasswords.push(newPassword);
 
     try {
-        const response = PasswordModel.insertPassword(newPassword)
-    } catch(e)
+        const response = await PasswordModel.insertPassword(newPassword)
+        res.cookie('passwordOwner', "nathan");
+        return res.send(response);
+    } catch(error) {
+        res.status(400);
+        return res.send("Error inserting Password Information into DB D:");
+    }
     
 
-    res.send("Password for the website " + requestBody.URL + " successfully added!")
+})
+
+
+router.put('/:passwordId', async function(req, res) {
+    // is this now an object?
+    const passwordId = req.params.passwordId;
+    const passwordData = req.body;
+
+    if (!passwordData.URL || !passwordData.Password) {
+        res.status(400).send("You need to include the password URL and password password in your request");
+    }
+
+    try {
+        // why is this a const? Are we going to reuse this?
+        const passwordUpdateResponse = await PasswordModel.updatePassword(passwordId, passwordData);
+        return res.send('Successfully updated password ID ' + passwordId);
+    } catch (error) {
+        res.status(400);
+        return res.send("Error updating the password Information");
+    }
+
+
+    // for(let i = 0; i < personalPasswords.length; i++) {
+    //     const passwordRow = personalPasswords[i];
+    //     if (passwordRow.URL === passwordURL) {
+    //         passwordRow.URL = passwordData.URL;
+    //         passwordRow.Password = passwordData.Password;
+    //         return res.send('The URL of ' + passwordURL + " is " + passwordRow.URL)
+    //     }
+    // }
 
 })
+
+
+
+router.delete('/:passwordId', async function(req, res) {
+    const passwordId = req.params.passwordId;
+
+
+    try {
+        const deletePasswordResponse = await PasswordModel.deletePassword(passwordId);
+        return res.send(deletePasswordResponse);
+    } catch (error) {
+        res.status(400);
+        return res.send(error);
+    }
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = router;
+
+
+
 
 // Before MongoDB
 // router.post('/', function(req, res) {
@@ -77,60 +165,60 @@ router.post('/', async function(req, res) {
 
 // })
 
+// Before MongoDB
+// We need to get the passwords
+// router.get('/', function(req, res) {
+//     return res.send(personalPasswords);
+// })
 
-router.put('/:passwordId', async function(req, res) {
-    const passwordURL = req.params.passwordId;
-    const passwordData = req.body;
+// router.delete('/:passwordId', function(req, res) {
+//     const passwordURL = req.params.passwordId;
 
-    if (!passwordData.URL || !passwordData.Password) {
-        res.status(400).send("You need to include the password URL and password password in your request");
-    }
+//     personalPasswords = personalPasswords.filter((password) => {
+//         return password.URL !== passwordURL;
+//     })
 
+//     return res.send("Success :)");
+// })
 
-    for(let i = 0; i < personalPasswords.length; i++) {
-        const passwordRow = personalPasswords[i];
-        if (passwordRow.URL === passwordURL) {
-            passwordRow.URL = passwordData.URL;
-            passwordRow.Password = passwordData.Password;
-            return res.send('The URL of ' + passwordURL + " is " + passwordRow.URL)
-        }
-    }
+// Before MongoDB
+// router.put('/:passwordId', async function(req, res) {
+//     const passwordURL = req.params.passwordId;
+//     const passwordData = req.body;
 
-    res.status(404);
-    return res.send("Password with the URL " + passwordURL + " not found :(");
-
-    // try {
-    //     const passwordUpdateResponse = await PokemonModel.updatePokemon(pokemonId, pokemonData);
-    //     return res.send('Successfully updated pokemon ID ' + pokemonId)
-    // } catch (error) {
-    //     res.status(400);
-    //     return res.send(error);
-    // }
-})
-
-
-
-// router.put('/:passwordId', function(req, res) {
-//     const originalPasswordURL = req.params.passwordId;
-//     const updatedData = req.body;
-
-//     if (!updatedData.Password) {
-//         return res.status(400).send("You need to include the new password in your request");
+//     if (!passwordData.URL || !passwordData.Password) {
+//         res.status(400).send("You need to include the password URL and password password in your request");
 //     }
 
-//     let found = false;
+
 //     for(let i = 0; i < personalPasswords.length; i++) {
-//         if (personalPasswords[i].URL === originalPasswordURL) {
-//             personalPasswords[i].Password = updatedData.Password;  // Only update the password
-//             found = true;
-//             break;
+//         const passwordRow = personalPasswords[i];
+//         if (passwordRow.URL === passwordURL) {
+//             passwordRow.URL = passwordData.URL;
+//             passwordRow.Password = passwordData.Password;
+//             return res.send('The URL of ' + passwordURL + " is " + passwordRow.URL)
 //         }
 //     }
 
-//     if (!found) {
-//         return res.status(404).send("Password with the URL " + originalPasswordURL + " not found");
-//     }
+//     res.status(404);
+//     return res.send("Password with the URL " + passwordURL + " not found :(");
 
-//     return res.send('Password updated successfully for ' + originalPasswordURL);
-// });
-module.exports = router;
+//     // try {
+//     //     const passwordUpdateResponse = await PokemonModel.updatePokemon(pokemonId, pokemonData);
+//     //     return res.send('Successfully updated pokemon ID ' + pokemonId)
+//     // } catch (error) {
+//     //     res.status(400);
+//     //     return res.send(error);
+//     // }
+// })
+
+
+// router.delete('/:passwordId', function(req, res) {
+//     const passwordURL = req.params.passwordId;
+
+//     personalPasswords = personalPasswords.filter((password) => {
+//         return password.URL !== passwordURL;
+//     })
+
+//     return res.send("Success :)");
+// })
