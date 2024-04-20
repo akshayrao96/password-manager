@@ -13,7 +13,8 @@ let personalPasswords = [
 
 // We need to get the passwords
 router.get('/', async function(req, res) {
-    const owner = req.cookies.passwordOwner;
+    // const owner = req.cookies.passwordOwner;
+    const owner = req.cookies.Username;
 
 
 
@@ -49,6 +50,7 @@ router.get('/:passwordId', async function(req, res) {
 
 router.post('/', async function(req, res) {
     const requestBody = req.body;
+    const username = req.cookies.Username
 
 
     // note you can technically comment this out because MongoDB can help do the checks
@@ -60,7 +62,7 @@ router.post('/', async function(req, res) {
     const newPassword = {
         URL: requestBody.URL,
         Password: requestBody.Password,
-        owner: "nathan",
+        owner: username,
     }
 
     // you need to know that whenever you add data into a database, you get a Promise
@@ -89,6 +91,11 @@ router.put('/:passwordId', async function(req, res) {
     }
 
     try {
+        // verify that this password is owned by this user
+        // PasswordModel.get
+
+
+
         // why is this a const? Are we going to reuse this?
         const passwordUpdateResponse = await PasswordModel.updatePassword(passwordId, passwordData);
         return res.send('Successfully updated password ID ' + passwordId);

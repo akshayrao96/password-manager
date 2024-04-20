@@ -8,16 +8,24 @@ const userModel = require('./db/user.model.cjs')
 router.post('/register', async function(request, response) {
     const requestBody = request.body
 
+    const firstName = requestBody.FirstName
+    const lastName = requestBody.LastName
     const username = requestBody.Username
     const password = requestBody.Password
 
     const newUser = {
+        FirstName: firstName,
+        LastName: lastName,
         Username: username,
         Password: password
     }
 
     try {
         const createUserResponse = await userModel.insertUser(newUser);
+
+        // what is the first paramet of this cookie?
+        response.cookie('Username', username);
+
         return response.send('User with username ' + username + ' created.');
     } catch (error) {
         response.status(400);
@@ -44,12 +52,36 @@ router.post('/login', async function(request, response) {
             return response.send('Passwords do not match.')
         }
 
+        response.cookie('Username', username);
         return response.send('Logged in!')
     } catch (error) {
         response.status(400);
         return response.send('Failed to login: ', error)
 
     }
+})
+
+
+router.get('/loggedIn', function(request, response) {
+    const username = request.cookies.Username
+
+
+    if(username) {
+        return response.send({
+            username: username,
+        });
+
+    } else {
+        response.status(400);
+        return response.send('Not logged in.')
+    }
+})
+
+
+router.post('/logout', function(request, response) {
+    
+    response.clearCookie('Username');
+    return response.send('Logged out');
 })
 
 
