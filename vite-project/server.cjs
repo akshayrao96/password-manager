@@ -2,6 +2,7 @@ const express = require('express');
 // const pokemon = require('./backend/pokemon.api.cjs');
 // const users = require('./backend/user.api.cjs')
 const passwordManager = require('./backend/passwordManager.api.cjs');
+const users = require('./backend/user.api.cjs')
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
@@ -25,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/passwordManager', passwordManager);
 // app.use('/api/pokemon', pokemon);
-// app.use('/api/users', users);
+app.use('/api/users', users);
 
 app.get('/', function(req, res) {
     res.send("This is the FIRST GET request")
