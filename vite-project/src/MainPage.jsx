@@ -38,14 +38,13 @@ function MainPage() {
         }
       }
 
-      function updatePasswordLogIn(event) {
+    function updatePasswordLogIn(event) {
         setPasswordLogInState(event.target.value);
     }
   
     function updateUsernameLogIn(event) {
         setUsernameLogInState(event.target.value);
     }
-
 
     async function onSubmitRegister() {
         setErrorRegisterMsgState('')
@@ -54,6 +53,7 @@ function MainPage() {
         //     setErrorRegisterMsgState('Please verify passwords are the same :)')
         //   return;
         // }
+
   
         try {
           await axios.post('/api/users/register', {

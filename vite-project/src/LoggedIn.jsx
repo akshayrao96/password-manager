@@ -2,9 +2,11 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import './MainPage.css'
 import NavBar from './NavBar';
-
+import NavBarLoggedIn from './NavBarLoggedIn';
+import { useNavigate } from 'react-router';
 
 function LoggedIn() {
+    const navigate = useNavigate();
     // Want to be able to get a whole empty list at the beginning
     const [passwordList, setPasswordList] = useState([]);
 
@@ -20,6 +22,7 @@ function LoggedIn() {
         // originalPasswordURL: '',
         // originalPasswordPassword: ''
     });
+    const [username, setUsername] = useState('');
 
     // This function talks to the backend to retrieve this
     async function getAllPassword() {
@@ -87,9 +90,28 @@ function LoggedIn() {
     });
     }
 
-    function onStart() {
-        getAllPassword();
+    async function isLoggedIn() {
+        try {
+            const response = await axios.get('/api/users/loggedIn');
+            // why is this small letter username?
+            const username = response.data.username;
+            setUsername(username);
+        } catch (e) {
+            navigate('/')
+        }
+     
     }
+
+    function onStart() {
+        isLoggedIn()
+          .then(() => {
+            getAllPassword()
+          })
+      }  
+
+    // function onStart() {
+    //     getAllPassword();
+    // }
 
     // This allows the passwords to be shown when page is mounted
     useEffect(onStart, [])
@@ -126,14 +148,20 @@ function LoggedIn() {
     if (errorMessage) {
         errorComponent = <h1>{errorMessage}</h1>
     }
+
+    if(!username) {
+        return <div>Loading...</div>
+    }
+
+
     return(
         <div>
-            <NavBar/>
+            <NavBarLoggedIn/>
             <body>
                 <div className="content">
                     <section>
                         <div className="container">
-                            <h2 className="text-center">Your Passwords</h2>
+                            <h2 className="text-center">Your Passwords {username}</h2>
                                 <div className="management-box">
                                     {/* I dont understand this specific line of code - why need && */}
                                     {errorComponent}

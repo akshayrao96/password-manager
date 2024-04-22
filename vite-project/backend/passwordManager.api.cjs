@@ -32,6 +32,7 @@ router.get('/', async function(req, res) {
 
 router.get('/:passwordId', async function(req, res) {
     const passwordId = req.params.passwordId;
+    
     // const trainer = req.params.trainer;
 
 
@@ -85,6 +86,7 @@ router.put('/:passwordId', async function(req, res) {
     // is this now an object?
     const passwordId = req.params.passwordId;
     const passwordData = req.body;
+    const owner = req.cookies.Username;
 
     if (!passwordData.URL || !passwordData.Password) {
         res.status(400).send("You need to include the password URL and password password in your request");
@@ -94,6 +96,12 @@ router.put('/:passwordId', async function(req, res) {
         // verify that this password is owned by this user
         // PasswordModel.get
 
+        const getPasswordResponse = await PasswordModel.getPasswordById(passwordId)
+        // Don't understand this why is owner a property of getPassword response?
+        if(getPasswordResponse !== null && getPasswordResponse.owner !== owner) {
+            res.status(400);
+            return res.send("You do not own this Password");
+        }
 
 
         // why is this a const? Are we going to reuse this?
@@ -120,10 +128,17 @@ router.put('/:passwordId', async function(req, res) {
 
 router.delete('/:passwordId', async function(req, res) {
     const passwordId = req.params.passwordId;
+    const owner = req.cookies.Username;
 
 
     try {
         const deletePasswordResponse = await PasswordModel.deletePassword(passwordId);
+
+        if(deletePasswordResponse !== null && deletePasswordResponse.owner !== owner) {
+            res.status(400);
+            return res.send("You do not own this Password");
+        }
+
         return res.send(deletePasswordResponse);
     } catch (error) {
         res.status(400);
