@@ -102,7 +102,7 @@ router.post('/', async function(req, res) {
     }
 
     if (!newPassword.Password) {
-        newPassword.Password = generatePassword(12, requestBody.Options)
+        newPassword.Password = generatePassword(requestBody.Length, requestBody.Options)
     }
 
     // you need to know that whenever you add data into a database, you get a Promise

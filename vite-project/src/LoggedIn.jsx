@@ -31,7 +31,8 @@ function LoggedIn() {
     });
 
 
-    // const [length, setLength] = useState(12);
+    const [length, setLength] = useState(12);
+    const [lengthError, setlengthError] = useState(false);
 
     
     
@@ -58,7 +59,8 @@ function LoggedIn() {
             const passwordOptions = {
                 URL: passwordURL,
                 Password: passwordPassword,
-                Options: options, // Include options in the request
+                Options: options,
+                Length:length,
             };
             if (editing.isEditing) {
                 await axios.put('/api/passwordManager/' + editing.editingPasswordId, passwordOptions);
@@ -100,9 +102,15 @@ function LoggedIn() {
         setPasswordPassword(event.target.value);
     }
 
-    // function updateLength(event) {
-    //     setLength(event.target.value);
-    // }
+    function updateLength(event) {
+        let value = event.target.value;
+        if (value >= 4 && value <= 50) {
+            setlengthError(false)
+            setLength(value)
+        } else {
+            setlengthError(true)
+        }
+    }
 
     const handleCheckboxChange = (event) => {
         setOptions({
@@ -183,12 +191,31 @@ function LoggedIn() {
         submitButton = "Add New Password";
     }
 
-    // let PasswordGeneratorAssistComponent;
-    // if (editing.isEditing) {
-    //     PasswordGeneratorAssistComponent = <div></div>
-    // } else {
-    //     PasswordGeneratorAssistComponent = <PasswordGenerateAssist/>
-    // }
+    let PasswordGeneratorAssistComponent;
+    if (editing.isEditing) {
+        PasswordGeneratorAssistComponent = <div></div>
+    } else {
+        PasswordGeneratorAssistComponent = <div>
+                                                <div>
+                                                    <input type="checkbox" name="alphabet" checked={options.alphabet} onChange={handleCheckboxChange}/>
+                                                    <label for="alphabet">Alphabet</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" name="numerals" check={options.numerals} onChange={handleCheckboxChange}/>
+                                                    <label for="numerals">Numerals</label>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" name="symbols" check={options.symbols} onChange={handleCheckboxChange}/>
+                                                    <label for="symbols">Symbols</label>
+                                                </div>
+                                                <div>
+                                                    <label for="length">Password Length</label>
+                                                    <input type="number" name="length" placeholder={12} onChange={updateLength}/>
+                                                    {lengthError && <div style={{ color: 'red' }}>Password can only be a length between 4-50 inclusive.</div>}                                        
+                                                </div>
+                                            </div>
+        
+    }
 
 
     // {errorMessage && <h1>{errorMessage}</h1>}
@@ -226,22 +253,7 @@ function LoggedIn() {
                                         <div>
                                             <label>Password:</label> <input value={passwordPassword} onInput={(event) => updatePasswordPassword(event)}/>
                                         </div>
-                                            {/* {PasswordGeneratorAssistComponent} */}
-                                            {/* <PasswordGenerateAssist/> */}
-
-                                        
-                                        <div>
-                                            <input type="checkbox" name="alphabet" checked={options.alphabet} onChange={handleCheckboxChange}/>
-                                            <label for="alphabet">Alphabet</label>
-                                        </div>
-                                        <div>
-                                            <input type="checkbox" name="numerals" check={options.numerals} onChange={handleCheckboxChange}/>
-                                            <label for="numerals">Numerals</label>
-                                        </div>
-                                        <div>
-                                            <input type="checkbox" name="numberals" check={options.symbols} onChange={handleCheckboxChange}/>
-                                            <label for="symbols">Symbols</label>
-                                        </div>
+                                            {PasswordGeneratorAssistComponent}
                                         <div>
                                             <button onClick={() => insertPassword()}>{submitButton}</button>
                                             <button onClick={() => onCancel()}>Cancel</button>
