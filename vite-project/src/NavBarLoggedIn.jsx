@@ -4,7 +4,9 @@ import './MainPage.css'
 import { useNavigate } from 'react-router'
 
 
-function NavBarLoggedIn() {
+function NavBarLoggedIn(props) {
+
+    const yourName = props.yourName;
 
     const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ function NavBarLoggedIn() {
                     <span></span>
                 </label>
                 <div class="signIn">
+                    <div id="user-settings" ><u><strong>{yourName}'s Account</strong></u></div>
                     <button id="logOut-button" onClick={logOut}>Log Out</button>
                 </div>
         </header>

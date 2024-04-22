@@ -24,6 +24,17 @@ function LoggedIn() {
     });
     const [username, setUsername] = useState('');
 
+
+
+    const [options, setOptions] = useState({
+        alphabet: false,
+        numerals: false,
+        symbols: false
+    });
+
+    
+    
+
     // This function talks to the backend to retrieve this
     async function getAllPassword() {
         const response = await axios.get('/api/passwordManager/');
@@ -33,7 +44,10 @@ function LoggedIn() {
     // Talks to the backend to delete this password
     async function deletePassword(passwordId) {
         await axios.delete('/api/passwordManager/' + passwordId);
+        
         await getAllPassword();
+        window.location.reload();
+        
     }
 
     // We want to insert a new URL and password
@@ -71,6 +85,13 @@ function LoggedIn() {
     function updatePasswordPassword(event) {
         setPasswordPassword(event.target.value);
     }
+
+    const handleCheckboxChange = (event) => {
+        setOptions({
+            ...options,
+            [event.target.name]: event.target.checked
+        });
+    };
 
     function setEditingPassword(passwordURL, passwordPassword, passwordId) {
         setPasswordURL(passwordURL);
@@ -156,12 +177,12 @@ function LoggedIn() {
 
     return(
         <div>
-            <NavBarLoggedIn/>
+            <NavBarLoggedIn yourName={username}/>
             <body>
                 <div className="content">
                     <section>
                         <div className="container">
-                            <h2 className="text-center">Your Passwords {username}</h2>
+                            <h2 className="text-center">Your Passwords <u>{username}</u></h2>
                                 <div className="management-box">
                                     {/* I dont understand this specific line of code - why need && */}
                                     {errorComponent}
@@ -181,6 +202,20 @@ function LoggedIn() {
                                         <div>
                                             <button onClick={() => insertPassword()}>{submitButton}</button>
                                             <button onClick={() => onCancel()}>Cancel</button>
+                                        </div>
+                                        <div>
+                                        <label>
+                                            <input type="checkbox" name="alphabet" checked={options.alphabet} onChange={handleCheckboxChange}/>
+                                            Alphabet
+                                        </label>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" id="numerals" name="options" value="numerals"/>
+                                            <label for="numerals">Numerals</label>
+                                        </div>
+                                        <div>
+                                            <input type="checkbox" id="symbols" name="options" value="symbols"/>
+                                            <label for="symbols">Symbols</label>
                                         </div>
                                     </div>
                                 </div>          

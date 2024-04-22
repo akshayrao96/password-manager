@@ -16,7 +16,7 @@ function About() {
                                 <h2 class="text-center">What We're All About!</h2>
                                 <div class="split">
                                     <div class="left-description">
-                                        <h4>PERSONAL PASSWORD MANAGER</h4>
+                                        <h4>THE PERSONAL PASSWORD MANAGER</h4>
                                         <h2>Secure your business by securing your passwords.</h2>
                                         <p>Take the guesswork out of password management, and secret sharing
                                             so that you can keep your teammates safe and your business moving.
