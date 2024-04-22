@@ -24,13 +24,14 @@ function LoggedIn() {
     });
     const [username, setUsername] = useState('');
 
-
-
     const [options, setOptions] = useState({
         alphabet: false,
         numerals: false,
         symbols: false
     });
+
+
+    // const [length, setLength] = useState(12);
 
     
     
@@ -54,17 +55,30 @@ function LoggedIn() {
     async function insertPassword() {
         setErrorMessage('')
         try {
+            const passwordOptions = {
+                URL: passwordURL,
+                Password: passwordPassword,
+                Options: options, // Include options in the request
+            };
             if (editing.isEditing) {
-                await axios.put('/api/passwordManager/' + editing.editingPasswordId, {
-                    URL: passwordURL,
-                    Password: passwordPassword,
-                });
+                await axios.put('/api/passwordManager/' + editing.editingPasswordId, passwordOptions);
             } else {
-                await axios.post('/api/passwordManager/', {
-                    URL: passwordURL,
-                    Password: passwordPassword,
-                });
+                await axios.post('/api/passwordManager/', passwordOptions);
             }
+    
+
+
+            // if (editing.isEditing) {
+            //     await axios.put('/api/passwordManager/' + editing.editingPasswordId, {
+            //         URL: passwordURL,
+            //         Password: passwordPassword,
+            //     });
+            // } else {
+            //     await axios.post('/api/passwordManager/', {
+            //         URL: passwordURL,
+            //         Password: passwordPassword,
+            //     });
+            // }
             // This is so the fields get cleared out
             setPasswordURL('');
             setPasswordPassword('');
@@ -85,6 +99,10 @@ function LoggedIn() {
     function updatePasswordPassword(event) {
         setPasswordPassword(event.target.value);
     }
+
+    // function updateLength(event) {
+    //     setLength(event.target.value);
+    // }
 
     const handleCheckboxChange = (event) => {
         setOptions({
@@ -164,6 +182,15 @@ function LoggedIn() {
     } else {
         submitButton = "Add New Password";
     }
+
+    // let PasswordGeneratorAssistComponent;
+    // if (editing.isEditing) {
+    //     PasswordGeneratorAssistComponent = <div></div>
+    // } else {
+    //     PasswordGeneratorAssistComponent = <PasswordGenerateAssist/>
+    // }
+
+
     // {errorMessage && <h1>{errorMessage}</h1>}
     let errorComponent;
     if (errorMessage) {
@@ -199,23 +226,25 @@ function LoggedIn() {
                                         <div>
                                             <label>Password:</label> <input value={passwordPassword} onInput={(event) => updatePasswordPassword(event)}/>
                                         </div>
+                                            {/* {PasswordGeneratorAssistComponent} */}
+                                            {/* <PasswordGenerateAssist/> */}
+
+                                        
                                         <div>
-                                            <button onClick={() => insertPassword()}>{submitButton}</button>
-                                            <button onClick={() => onCancel()}>Cancel</button>
-                                        </div>
-                                        <div>
-                                        <label>
                                             <input type="checkbox" name="alphabet" checked={options.alphabet} onChange={handleCheckboxChange}/>
-                                            Alphabet
-                                        </label>
+                                            <label for="alphabet">Alphabet</label>
                                         </div>
                                         <div>
-                                            <input type="checkbox" id="numerals" name="options" value="numerals"/>
+                                            <input type="checkbox" name="numerals" check={options.numerals} onChange={handleCheckboxChange}/>
                                             <label for="numerals">Numerals</label>
                                         </div>
                                         <div>
-                                            <input type="checkbox" id="symbols" name="options" value="symbols"/>
+                                            <input type="checkbox" name="numberals" check={options.symbols} onChange={handleCheckboxChange}/>
                                             <label for="symbols">Symbols</label>
+                                        </div>
+                                        <div>
+                                            <button onClick={() => insertPassword()}>{submitButton}</button>
+                                            <button onClick={() => onCancel()}>Cancel</button>
                                         </div>
                                     </div>
                                 </div>          

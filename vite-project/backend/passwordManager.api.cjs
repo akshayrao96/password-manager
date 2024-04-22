@@ -11,6 +11,34 @@ let personalPasswords = [
     {URL: "www.Gmail.com", Password: "1234"},
 ];
 
+
+
+function generatePassword(length, options) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const numerals = '0123456789';
+    const symbols = '!@#$%^&*()_+=-[]{}|;:",.<>?';
+
+    let validChars = '';
+    if (options.alphabet) {
+        validChars += alphabet;
+    }
+    if (options.numerals) {
+        validChars += numerals;
+    }
+    if (options.symbols) {
+        validChars += symbols;
+    }
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        password += validChars.charAt(Math.floor(Math.random() * validChars.length));
+    }
+    return password;
+}
+
+
+
+
 // We need to get the passwords
 router.get('/', async function(req, res) {
     // const owner = req.cookies.passwordOwner;
@@ -51,16 +79,30 @@ router.post('/', async function(req, res) {
     const username = req.cookies.Username
 
 
-    // note you can technically comment this out because MongoDB can help do the checks
-    if (!requestBody.URL || !requestBody.Password) {
-        res.status(401);
-        return res.send("Please inset a valid URL website and Password!");
+    if (!requestBody.URL) {
+        res.status(400).send("Please insert a valid URL.");
+        return;
     }
+
+
+    // note you can technically comment this out because MongoDB can help do the checks
+    // if (!requestBody.URL || !requestBody.Password) {
+    //     res.status(401);
+    //     return res.send("Please inset a valid URL website and Password!");
+    // }
+
+    // if (requestBody.URL && !requestBody.Password) {
+
+    // }
 
     const newPassword = {
         URL: requestBody.URL,
         Password: requestBody.Password,
         owner: username,
+    }
+
+    if (!newPassword.Password) {
+        newPassword.Password = generatePassword(12, requestBody.Options)
     }
 
     // you need to know that whenever you add data into a database, you get a Promise
